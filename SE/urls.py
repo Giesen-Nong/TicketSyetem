@@ -4,10 +4,10 @@ from TicketSystem import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.index),
+    path('',views.login),
     path('index/',views.index),
-    path('login/',views.login),
     path('book/',views.book),
+    path('login/',views.login),
     path('logout/',views.logout),
     path('register/',views.register),
 ]
