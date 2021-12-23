@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate
 from django.shortcuts import redirect
 from TicketSystem import models
+import numpy as np
 
 # Create your views here.
 # def index(request):
@@ -22,7 +23,8 @@ def book(request):
     if request.session.get('is_login',None):
         name ="机票预订系统"
         n_list = models.FlightInfo.objects.all()
-        return render(request,"book.html",{"n_list":n_list})
+        user = models.UserInfo.objects.get(U_Name = request.session.get('user_name'))
+        return render(request,"book.html",{"n_list":n_list,"user":user})
     else:
         return redirect('/login/')
 
@@ -86,3 +88,29 @@ def register(request):
                 message = '注册成功！'
                 return render(request, 'login.html', locals())  # 自动跳转到登录页面
     return render(request, 'login.html', locals())
+
+def buy(request):
+    while(1):
+        a = np.random.randint(0,9,10)
+        O_id = ''.join([str(x) for x in a])
+        same_Oid = models.order.objects.filter(O_Id=O_id)
+        if same_Oid:
+            continue
+        break
+    U_id = request.POST['U_Id']
+    F_id = request.POST['F_Id']
+    F_status = request.POST['status']
+    if F_status == '1':
+        Status = True
+    else:
+        Status = False
+    U = models.UserInfo.objects.get(U_Id = U_id)
+    F = models.FlightInfo.objects.get(F_ID = F_id)
+    F.num_a -= 1
+    F.save()
+    new_order = models.order.objects.create(O_Id = O_id,U_Id = U,F_Id = F,status = Status)
+    return redirect('/book/')
+
+def order(request):
+    n_list = models.orderinfo.objects.all()
+    return render(request, 'order.html',{"n_list":n_list})
