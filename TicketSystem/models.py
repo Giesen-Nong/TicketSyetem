@@ -28,7 +28,7 @@ class order(models.Model):
     U_Id = models.ForeignKey(UserInfo,on_delete=models.CASCADE)
     F_Id = models.ForeignKey(FlightInfo,on_delete=models.CASCADE)
     status = models.BooleanField(default='0')   #判断是否付款
-    seat = models.IntegerField(default=1)
+    seat = models.IntegerField(default=0)
 
 class orderinfo(models.Model):
     O_Id = models.CharField(max_length=10,primary_key=True)
@@ -40,7 +40,9 @@ class orderinfo(models.Model):
     origin = models.CharField(max_length=20)
     des = models.CharField(max_length=20)
     price = models.CharField(max_length=10)
+    a_id = models.CharField(max_length=20)
     status = models.BooleanField()
+    
     
     class Meta:
         db_table = 'order_view'

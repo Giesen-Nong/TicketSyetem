@@ -13,4 +13,5 @@ urlpatterns = [
     path('register/',views.register),
     path('buy/',views.buy),
     path('order/',views.order),
+    path('ticketpay/',views.ticketpay)
 ]

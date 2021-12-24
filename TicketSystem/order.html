@@ -159,16 +159,103 @@
                                                 <td>{{n.origin}}</td>
                                                 <td>{{n.des}}</td>
                                                 <td>{{n.s_time}}</td>
-                                                {% if n.status == '1' %}
+                                                {% if n.status == True %}
                                                 <td>已付款</td>
+                                                <td><button type="button" class="btn btn-success btn-addon" style="margin:0;" data-toggle="modal" data-target="#myModal">查看详情</button></td>
                                                 {% else %}
                                                 <td>未付款</td>
+                                                <td><button type="button" class="btn btn-primary btn-addon" style="margin:0 5px 0;font-size:12px;" data-toggle="modal" data-target="#pay"> 付款 </button>
+                                                    <div class="modal fade" id="pay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="col-md-12">
+                                                                    <div class="panel panel-white">
+                                                                        <div class="panel-heading clearfix">
+                                                                            <h4 class="panel-title">订票信息确认</h4>
+                                                                        </div>
+                                                                        <div class="panel-body">
+                                                                            <form class="form-horizontal">{% csrf_token %}
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">订单号</label>
+                                                                                    <input style="display:none;" type="text" id="oid" value="{{ n.O_Id }}">
+                                                                                    <div class="col-sm-10">
+                                                                                    <span>{{n.O_Id}}</span>
+                                                                                    <P></p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">姓名</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ request.session.user_name }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">身份证号</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ request.session.user_id }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label  class="col-sm-2 control-label">航班号</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ n.f_id }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">出发地</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ n.origin }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">目的地</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ n.des }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">航空公司</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ n.a_id }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">价格</label>
+                                                                                <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="F_Price" style="display:none;" readonly="readonly"  value="{{ n.Price }}">
+                                                                                <span>{{ n.price }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group" id="i_password">
+                                                                                <label class="col-sm-2 control-label">输入密码</label>
+                                                                                <div class="col-sm-10">
+                                                                                <input id="password_i" type="password" class="form-control" name="password_i">
+                                                                                <P class="msg" style="text-align:left;color:red;font-size:13px;font-weight:500;padding-left:5px;"></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input id="status" type="text" class="form-control" name="status" value="0" style = "display:none;">
+                                                                            <div class="form-group" id = "buy_btn1">
+                                                                                <div class="col-sm-offset-2 col-sm-10">
+                                                                                <button type="button" class="btn btn-success ticketpay" style="margin:0 5 0px 0 0;" >付款</button>
+                                                                                </div>
+                                                                            </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div><!-- /.modal-content -->
+                                                        </div><!-- /.modal -->
+                                                    </div>
+                                                <button type="button" class="btn btn-danger btn-addon" style="margin:0;font-size:12px;" data-toggle="modal" data-target="#myModal">删除订单</button></td>
                                                 {% endif %}
-                                                {% if n.num_a == 0 %}
-                                                <td><button type="button" class="btn btn-success btn-rounded" Disabled="Disabled" style="margin:0;" name="{{ n.F_ID }}" data-toggle="modal" data-target="#myModal">订票</button></td>
-                                                {% else %}
-                                                <td><button type="button" class="btn btn-success btn-rounded" style="margin:0;" name="{{ n.F_ID }}" data-toggle="modal" data-target="#myModal">订票</button></td>
-                                                {% endif %}
+                                               
                                                 <!-- 模态框（Modal） -->
                                             </tr>
                                             {% endfor %}
@@ -214,5 +301,41 @@
         <script src="{% static "plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" %}"></script>
         <script src="{% static "js/ecaps.min.js" %}"></script>
         <script src="{% static "js/pages/table-data.js" %}"></script>
+        <script>
+            $('.ticketpay').click(function () {
+                div1 = document.getElementById("password_i");
+                pass = "{{ user.U_password }}";
+                if (div1.value){
+                    if (div1.value != pass) {
+                        $('.msg').html("密码错误，请重新输入！")
+                    }
+                    else {
+                        $.ajax({
+                            url:'/ticketpay/',
+                            method:'post',
+                            data:{'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'name':"{{ user.U_Name }}",'pwd':$('#password_i').val(),'oid':$('#oid').val()},
+                            success:function (data) {
+                                // 方式二 : 加一行,将json格式字符串转成字典
+                                // data = JSON.parse(data)
+                                
+                                // 状态码为200则表示登入成功
+                                if (data.status === 200){
+                                    // 前端进行网页跳转
+                                    alert("购买成功，可到订单管理查看！");
+                                    location.href='/order/';
+                                }else {
+                                    // 登入失败则使用DOM操作渲染msg	
+                                    $('.msg').html(data.msg)
+                                }
+                            }
+                        })
+                        
+                    }
+                }
+                else {
+                    $('.msg').html("请输入密码!")
+                }
+            })
+        </script>
     </body>
 </html>

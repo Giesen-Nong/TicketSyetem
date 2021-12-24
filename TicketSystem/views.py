@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.template import RequestContext
+from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from django.shortcuts import redirect
 from TicketSystem import models
@@ -113,4 +114,28 @@ def buy(request):
 
 def order(request):
     n_list = models.orderinfo.objects.all()
-    return render(request, 'order.html',{"n_list":n_list})
+    user = models.UserInfo.objects.get(U_Name = request.session.get('user_name'))
+    return render(request, 'order.html',{"n_list":n_list,"user":user})
+
+def ticketpay(request):
+    dic = {'status':None,'msg':None}  # 设置dic保存状态码及登入状态信息
+    # 如果是ajax请求
+    if request.is_ajax():
+        name = request.POST.get('name')  # 获取用户名
+        pwd = request.POST.get('pwd')
+        oid = request.POST.get('oid')
+        user_obj = models.UserInfo.objects.filter(U_Name=name,U_password=pwd).first()  # 拿到对象
+        if user_obj:
+            dic['status'] = 200  # 存在状态码设置成200
+            new_order = models.order.objects.get(U_Id=user_obj.U_Id,O_Id = oid)
+            new_order.status = True
+            new_order.save()
+        else:
+            dic['status'] = 201
+            dic['msg'] = '密码错误,请重新输入'
+        # 方式一 : 直接使用JsonResponse
+        return JsonResponse(dic)  # 将登入状态dic返回给前端ajax
+        # 方式二 : 手动转json格式
+        # import json
+        # return HttpResponse(json.dumps(dic))
+    return redirect('/order/')
