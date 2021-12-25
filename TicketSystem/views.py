@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from django.shortcuts import redirect
 from TicketSystem import models
 import numpy as np
+import datetime
 
 # Create your views here.
 # def index(request):
@@ -25,6 +26,11 @@ def book(request):
         name ="机票预订系统"
         n_list = models.FlightInfo.objects.all()
         user = models.UserInfo.objects.get(U_Name = request.session.get('user_name'))
+        get_order = models.FlightInfo.objects.filter()
+        now_time = datetime.datetime.now()
+        for i in get_order:
+            if now_time > i.StartTime:
+                i.delete()
         return render(request,"book.html",{"n_list":n_list,"user":user})
     else:
         return redirect('/login/')
@@ -98,6 +104,12 @@ def buy(request):
         if same_Oid:
             continue
         break
+    while(1):
+        Seat = np.random.randint(1,150,1)
+        same_seat = models.order.objects.filter(seat=Seat)
+        if same_seat:
+            continue
+        break
     U_id = request.POST['U_Id']
     F_id = request.POST['F_Id']
     F_status = request.POST['status']
@@ -109,7 +121,20 @@ def buy(request):
     F = models.FlightInfo.objects.get(F_ID = F_id)
     F.num_a -= 1
     F.save()
-    new_order = models.order.objects.create(O_Id = O_id,U_Id = U,F_Id = F,status = Status)
+    new_order = models.order.objects.create(O_Id = O_id,U_Id = U,F_Id = F,status = Status,seat = Seat)
+    return redirect('/book/')
+
+def buy_check(request):
+    dic = {'status':None,'msg':None}
+    if request.is_ajax():
+        fid = request.POST.get('fid')
+        o_info = models.order.objects.filter(U_Id = request.session.get('user_id'),F_Id = fid)
+        if o_info:
+            dic['status'] = 201
+            dic['msg'] = '不能重复购买同一张机票！'
+        else:
+            dic['status'] = 200
+        return JsonResponse(dic)
     return redirect('/book/')
 
 def order(request):
@@ -138,4 +163,32 @@ def ticketpay(request):
         # 方式二 : 手动转json格式
         # import json
         # return HttpResponse(json.dumps(dic))
+    return redirect('/order/')
+
+def delete_api(request):
+    # 如果是ajax请求
+    if request.is_ajax():
+        oid = request.POST.get('oid')
+        new_order = models.order.objects.filter(O_Id=oid).first()
+        F = models.FlightInfo.objects.get(F_ID = new_order.F_Id.F_ID)
+        F.num_a += 1
+        F.save()
+        new_order.delete()
+    return redirect('/order/')
+
+def time_check(request):
+    dic = {'status':None,'msg':None}
+    if request.is_ajax():
+        oid = request.POST.get('oid')
+        new_order = models.order.objects.filter(O_Id=oid).first()
+        F = models.FlightInfo.objects.get(F_ID = new_order.F_Id.F_ID)
+        s_time = F.StartTime
+        get_time = s_time+datetime.timedelta(days=-1)
+        now_time = datetime.datetime.now()
+        if now_time > get_time and now_time < s_time:
+            dic['status'] = 200
+        else:
+            dic['status'] = 201
+            dic['msg'] = '请在飞机起飞前一天与飞机起飞前之间取票'
+        return JsonResponse(dic)
     return redirect('/order/')

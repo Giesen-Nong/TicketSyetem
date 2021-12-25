@@ -87,11 +87,11 @@ DATABASES = {
     'default':
     {
         'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
-        'NAME': 'study', # 数据库名称
+        'NAME': 'tablename', # 数据库名称
         'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1
         'PORT': 3306, # 端口
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'njs123', # 数据库密码
+        'PASSWORD': 'yourpassword', # 数据库密码
     }
 }
 

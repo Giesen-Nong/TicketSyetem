@@ -40,27 +40,7 @@
                 vertical-align: middle;
             }
         </style>
-        <script>
-            function show1() {
-                div1 = document.getElementById("i_password");
-                div1.style.display = "block";
-                div2 = document.getElementById("buy_btn1");
-                div2.style.display = "none";
-                div3 = document.getElementById("buy_btn2");
-                div3.style.display = "block";
-            }
-            function buying() {
-                div1 = document.getElementById("password_i");
-                pass = "{{ user.U_password }}";
-                if (div1.value != pass) {
-                    alert("密码错误，已为你生成订单，请到订单管理进行付款或取消订单！");
-                }
-                else {
-                    document.getElementById("status").value = '1';
-                    alert("购买成功，可到订单管理查看！");
-                }
-            }
-        </script>
+        
     </head>
     <body>
         
@@ -188,12 +168,11 @@
                                                 <td>{{n.StartTime}} ~ {{n.ArriveTime}}</td>
                                                 <td>{{n.num_a}}/{{n.num}}</td>
                                                 {% if n.num_a == 0 %}
-                                                <td><button type="button" class="btn btn-success btn-rounded" Disabled="Disabled" style="margin:0;" name="{{ n.F_ID }}" data-toggle="modal" data-target="#myModal">订票</button></td>
+                                                <td><button type="button" class="btn btn-success btn-rounded" Disabled="Disabled" style="margin:0;">订票</button></td>
                                                 {% else %}
-                                                <td><button type="button" class="btn btn-success btn-rounded" style="margin:0;" name="{{ n.F_ID }}" data-toggle="modal" data-target="#myModal">订票</button></td>
-                                                {% endif %}
+                                                <td><button type="button" class="btn btn-success btn-rounded" style="margin:0;" data-toggle="modal" data-target="#book" data-id={{ n.F_ID }} data-origin={{n.Origin}} data-des={{n.Destination}} data-aname={{n.A_Name}} data-price={{n.Price}}>订票</button></td>
                                                 <!-- 模态框（Modal） -->
-                                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="book" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="col-md-12">
@@ -206,8 +185,6 @@
                                                                         <div class="form-group">
                                                                             <label class="col-sm-2 control-label">姓名</label>
                                                                             <div class="col-sm-10">
-                                                                            <input type="text" class="form-control" name="U_name" style="display:none;"  readonly="readonly"  value="{{ request.session.user_name }}">
-                                                                            {% comment %} <span>{{ request.session.user_name }}</span> {% endcomment %}
                                                                             <span>{{ user.U_Name }}</span>
                                                                             <P></p>
                                                                             </div>
@@ -223,44 +200,40 @@
                                                                         <div class="form-group">
                                                                             <label class="col-sm-2 control-label">航班号</label>
                                                                             <div class="col-sm-10">
-                                                                            <input type="text" class="form-control" name="F_Id" style="display:none;" readonly="readonly"  value="{{ n.F_ID }}">
-                                                                            <span>{{ n.F_ID }}</span>
+                                                                            <input type="text" class="form-control" id="f_id" name="F_Id" style="display:none;">
+                                                                            <span id="fid_text"></span>
                                                                             <P></p>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-sm-2 control-label">出发地</label>
                                                                             <div class="col-sm-10">
-                                                                            <input type="text" class="form-control" name="F_Origin" style="display:none;" readonly="readonly"  value="{{ n.Origin }}">
-                                                                            <span>{{ n.Origin }}</span>
+                                                                            <span id="origin"></span>
                                                                             <P></p>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-sm-2 control-label">目的地</label>
                                                                             <div class="col-sm-10">
-                                                                            <input type="text" class="form-control" name="F_Des" style="display:none;" readonly="readonly"  value="{{ n.Destination }}">
-                                                                            <span>{{ n.Destination }}</span>
+                                                                            <span id="des"></span>
                                                                             <P></p>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-sm-2 control-label">航空公司</label>
                                                                             <div class="col-sm-10">
-                                                                            <input type="text" class="form-control" name="F_Name" style="display:none;" readonly="readonly"  value="{{ n.A_Name }}">
-                                                                            <span>{{ n.A_Name }}</span>
+                                                                            <span id="aname"></span>
                                                                             <P></p>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-sm-2 control-label">价格</label>
                                                                             <div class="col-sm-10">
-                                                                            <input type="text" class="form-control" name="F_Price" style="display:none;" readonly="readonly"  value="{{ n.Price }}">
-                                                                            <span>{{ n.Price }}</span>
+                                                                            <span id="price"></span>
                                                                             <P></p>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="form-group" style="display:none;" id="i_password">
+                                                                        <div class="form-group" id="i_password">
                                                                             <label class="col-sm-2 control-label">输入密码</label>
                                                                             <div class="col-sm-10">
                                                                             <input id="password_i" type="password" class="form-control" name="password_i">
@@ -268,12 +241,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <input id="status" type="text" class="form-control" name="status" value="0" style = "display:none;">
-                                                                        <div class="form-group" id = "buy_btn1">
-                                                                            <div class="col-sm-offset-2 col-sm-10">
-                                                                            <button type="button" class="btn btn-success" style="margin-top:10px;margin-bottom:-14px;margin-left:130px;" onClick="show1();" >确认</button>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-group" id = "buy_btn2" style="display:none;">
+                                                                        <div class="form-group" id = "buy_btn2">
                                                                             <div class="col-sm-offset-2 col-sm-10">
                                                                             <button type="submit" class="btn btn-success" style="margin-top:10px;margin-bottom:-14px;margin-left:130px;" onClick="buying()">购买</button>
                                                                             </div>
@@ -285,6 +253,7 @@
                                                         </div><!-- /.modal-content -->
                                                     </div><!-- /.modal -->
                                                 </div>
+                                                {% endif %}
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -328,6 +297,50 @@
         <script src="{% static "plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" %}"></script>
         <script src="{% static "js/ecaps.min.js" %}"></script>
         <script src="{% static "js/pages/table-data.js" %}"></script>
-
+        <script>
+            $('.btn-success').click(function (e) {
+                data_fid = e.currentTarget.dataset.id;
+                data_origin = e.currentTarget.dataset.origin;
+                data_des = e.currentTarget.dataset.des;
+                data_aname = e.currentTarget.dataset.aname;
+                data_price = e.currentTarget.dataset.price;
+                $('#fid_text').html(data_fid);
+                $('#origin').html(data_origin);
+                $('#des').html(data_des);
+                $('#aname').html(data_aname);
+                $('#price').html(data_price);
+                document.getElementById('f_id').value = $('#fid_text').text();
+                $('#password_i').val('');
+            })
+            function buying() {
+                $.ajax({
+                    url:'/buy_check/',
+                    method:'post',
+                    data:{'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'fid':$('#fid_text').text()},
+                    success:function (data) {
+                        // 方式二 : 加一行,将json格式字符串转成字典
+                        // data = JSON.parse(data)
+                        
+                        // 状态码为200则表示登入成功
+                        if (data.status === 200){
+                            div1 = document.getElementById("password_i");
+                            pass = "{{ user.U_password }}";
+                            if (div1.value != pass) {
+                                alert("密码错误，已为你生成订单，请到订单管理进行付款或取消订单！");
+                            }
+                            else {
+                                document.getElementById("status").value = '1';
+                                alert("购买成功，可到订单管理查看！");
+                            }
+                        }else {
+                            // 登入失败则使用DOM操作渲染msg	
+                            alert(data.msg)
+                            location.href='/book/';    
+                        }
+                    }
+                })
+            }
+            
+        </script>
     </body>
 </html>

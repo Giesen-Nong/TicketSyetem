@@ -13,5 +13,8 @@ urlpatterns = [
     path('register/',views.register),
     path('buy/',views.buy),
     path('order/',views.order),
-    path('ticketpay/',views.ticketpay)
+    path('ticketpay/',views.ticketpay),
+    path('delete_api/',views.delete_api),
+    path('buy_check/',views.buy_check),
+    path('time_check/',views.time_check)
 ]

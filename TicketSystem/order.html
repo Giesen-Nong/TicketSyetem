@@ -161,10 +161,102 @@
                                                 <td>{{n.s_time}}</td>
                                                 {% if n.status == True %}
                                                 <td>已付款</td>
-                                                <td><button type="button" class="btn btn-success btn-addon" style="margin:0;" data-toggle="modal" data-target="#myModal">查看详情</button></td>
+                                                <td><button type="button" class="info-btn btn btn-success btn-addon" style="margin:0;" data-toggle="modal" data-target="#info" data-fid={{ n.f_id }} data-origin={{n.origin}} data-des={{n.des}} data-aname={{n.a_id}} data-price={{n.price}} data-oid={{n.O_Id}} data-seat={{n.seat}}>查看详情</button></td>
+                                                <div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="col-md-12">
+                                                                <div class="panel panel-white">
+                                                                    <div class="panel-heading clearfix">
+                                                                        <h4 class="panel-title">订票信息确认</h4>
+                                                                    </div>
+                                                                    <div class="panel-body" style="text-align:center;">
+                                                                        <form class="form-horizontal">{% csrf_token %}
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">订单号</label>
+                                                                                <input style="display:none;" type="text" id="oid">
+                                                                                <div class="col-sm-10">
+                                                                                <span id="info_o_id"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">姓名</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span>{{ user.U_Name }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">身份证号</label>
+                                                                                <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="U_Id" style="display:none;"  placeholder="身份证号" value="{{ request.session.user_id }}">
+                                                                                <span>{{ request.session.user_id }}</span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">航班号</label>
+                                                                                <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" id="f_id" name="F_Id" style="display:none;">
+                                                                                <span id="info_fid_text"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">出发地</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span id="info_origin"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">目的地</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span id="info_des"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">航空公司</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span id="info_aname"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">价格</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span id="info_price"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-sm-2 control-label">座位号</label>
+                                                                                <div class="col-sm-10">
+                                                                                <span id="info_seat"></span>
+                                                                                <P></p>
+                                                                                </div>
+                                                                            </div>
+                                                                        <div class="form-group" id = "buy_btn1">
+                                                                            <div class="col-sm-offset-2 col-sm-10">
+                                                                            <P class="print_msg" style="color:red;font-size:13px;font-weight:500;margin-right:70px;"></p>
+                                                                            <button type="button" class="print btn btn-primary ticketpay" style="margin-left:230px;margin-top:20px" onClick="print_ticket();">打印机票</button>
+                                                                            <button type="button" class="btn btn-danger ticketpay" style="left:200px;margin-top:20px" onClick="del_ticket();">退票</button>
+                                                                            
+                                                                            
+                                                                            </div>
+                                                                        </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div><!-- /.modal-content -->
+                                                    </div><!-- /.modal -->
+                                                </div>
                                                 {% else %}
                                                 <td>未付款</td>
-                                                <td><button type="button" class="btn btn-primary btn-addon" style="margin:0 5px 0;font-size:12px;" data-toggle="modal" data-target="#pay"> 付款 </button>
+                                                <td><button type="button" class="btn btn-primary btn-addon" style="margin:0 5px 0;font-size:12px;" data-toggle="modal" data-target="#pay" data-fid={{ n.f_id }} data-origin={{n.origin}} data-des={{n.des}} data-aname={{n.a_id}} data-price={{n.price}} data-oid={{n.O_Id}}>付款</button>
                                                     <div class="modal fade" id="pay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
@@ -177,70 +269,70 @@
                                                                             <form class="form-horizontal">{% csrf_token %}
                                                                                 <div class="form-group">
                                                                                     <label class="col-sm-2 control-label">订单号</label>
-                                                                                    <input style="display:none;" type="text" id="oid" value="{{ n.O_Id }}">
+                                                                                    <input style="display:none;" type="text" id="oid">
                                                                                     <div class="col-sm-10">
-                                                                                    <span>{{n.O_Id}}</span>
+                                                                                    <span id="o_id"></span>
                                                                                     <P></p>
                                                                                     </div>
                                                                                 </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-sm-2 control-label">姓名</label>
-                                                                                <div class="col-sm-10">
-                                                                                <span>{{ request.session.user_name }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">姓名</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <span>{{ user.U_Name }}</span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-sm-2 control-label">身份证号</label>
-                                                                                <div class="col-sm-10">
-                                                                                <span>{{ request.session.user_id }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">身份证号</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control" name="U_Id" style="display:none;"  placeholder="身份证号" value="{{ request.session.user_id }}">
+                                                                                    <span>{{ request.session.user_id }}</span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label  class="col-sm-2 control-label">航班号</label>
-                                                                                <div class="col-sm-10">
-                                                                                <span>{{ n.f_id }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">航班号</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control" id="f_id" name="F_Id" style="display:none;">
+                                                                                    <span id="fid_text"></span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-sm-2 control-label">出发地</label>
-                                                                                <div class="col-sm-10">
-                                                                                <span>{{ n.origin }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">出发地</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <span id="origin"></span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-sm-2 control-label">目的地</label>
-                                                                                <div class="col-sm-10">
-                                                                                <span>{{ n.des }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">目的地</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <span id="des"></span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-sm-2 control-label">航空公司</label>
-                                                                                <div class="col-sm-10">
-                                                                                <span>{{ n.a_id }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">航空公司</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <span id="aname"></span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-sm-2 control-label">价格</label>
-                                                                                <div class="col-sm-10">
-                                                                                <input type="text" class="form-control" name="F_Price" style="display:none;" readonly="readonly"  value="{{ n.Price }}">
-                                                                                <span>{{ n.price }}</span>
-                                                                                <P></p>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-sm-2 control-label">价格</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <span id="price"></span>
+                                                                                    <P></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="form-group" id="i_password">
-                                                                                <label class="col-sm-2 control-label">输入密码</label>
-                                                                                <div class="col-sm-10">
-                                                                                <input id="password_i" type="password" class="form-control" name="password_i">
-                                                                                <P class="msg" style="text-align:left;color:red;font-size:13px;font-weight:500;padding-left:5px;"></p>
+                                                                                <div class="form-group" id="i_password">
+                                                                                    <label class="col-sm-2 control-label">输入密码</label>
+                                                                                    <div class="col-sm-10">
+                                                                                    <input id="password_i" type="password" class="form-control" name="password_i">
+                                                                                    <P class="msg" style="text-align:left;color:red;font-size:13px;font-weight:500;padding-left:5px;"></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <input id="status" type="text" class="form-control" name="status" value="0" style = "display:none;">
                                                                             <div class="form-group" id = "buy_btn1">
                                                                                 <div class="col-sm-offset-2 col-sm-10">
                                                                                 <button type="button" class="btn btn-success ticketpay" style="margin:0 5 0px 0 0;" >付款</button>
@@ -253,9 +345,26 @@
                                                             </div><!-- /.modal-content -->
                                                         </div><!-- /.modal -->
                                                     </div>
-                                                <button type="button" class="btn btn-danger btn-addon" style="margin:0;font-size:12px;" data-toggle="modal" data-target="#myModal">删除订单</button></td>
+                                                <button type="button"  class="delete_btn btn btn-danger btn-addon" style="margin:0;font-size:12px;" data-toggle="modal" data-target="#delete" data-oid={{n.O_Id}}>取消订单</button></td>
+                                                <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                <h4 class="modal-title" id="myModalLabel">提示</h4>
+                                                            </div>
+                                                            <div class="modal-body">是否确认取消该订单</div>
+                                                            <span id="del_oid" style="display:none;"></span>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                                <button type="button" class="btn btn-danger" onClick="delete_api();">确定</button>
+                                                            </div>
+                                                        </div><!-- /.modal-content -->
+                                                    </div><!-- /.modal -->
+                                                </div>
+                                                
                                                 {% endif %}
-                                               
+                                                
                                                 <!-- 模态框（Modal） -->
                                             </tr>
                                             {% endfor %}
@@ -302,6 +411,45 @@
         <script src="{% static "js/ecaps.min.js" %}"></script>
         <script src="{% static "js/pages/table-data.js" %}"></script>
         <script>
+            $('.btn-primary').click(function (e) {
+                data_fid = e.currentTarget.dataset.fid;
+                data_origin = e.currentTarget.dataset.origin;
+                data_des = e.currentTarget.dataset.des;
+                data_aname = e.currentTarget.dataset.aname;
+                data_price = e.currentTarget.dataset.price;
+                data_oid = e.currentTarget.dataset.oid;
+                $('#fid_text').html(data_fid);
+                $('#origin').html(data_origin);
+                $('#des').html(data_des);
+                $('#aname').html(data_aname);
+                $('#price').html(data_price);
+                $('#o_id').html(data_oid);
+                document.getElementById('oid').value = $('#o_id').text();
+                $('#password_i').val('');
+            })
+            $('.info-btn').click(function (e) {
+                data_fid = e.currentTarget.dataset.fid;
+                data_origin = e.currentTarget.dataset.origin;
+                data_des = e.currentTarget.dataset.des;
+                data_aname = e.currentTarget.dataset.aname;
+                data_price = e.currentTarget.dataset.price;
+                data_oid = e.currentTarget.dataset.oid;
+                data_seat = e.currentTarget.dataset.seat;
+                $('#info_fid_text').html(data_fid);
+                $('#info_origin').html(data_origin);
+                $('#info_des').html(data_des);
+                $('#info_aname').html(data_aname);
+                $('#info_price').html(data_price);
+                $('#info_o_id').html(data_oid);
+                $('#info_seat').html(data_seat);
+                document.getElementById('oid').value = $('#o_id').text();
+                $('#password_i').val('');
+                
+            })
+            $('.delete_btn').click(function (e) {
+                data_oid = e.currentTarget.dataset.oid;
+                $('#del_oid').html(data_oid);
+            })
             $('.ticketpay').click(function () {
                 div1 = document.getElementById("password_i");
                 pass = "{{ user.U_password }}";
@@ -336,6 +484,54 @@
                     $('.msg').html("请输入密码!")
                 }
             })
+            function delete_api() {
+                $.ajax({
+                    url:'/delete_api/',
+                    method:'post',
+                    data:{'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'oid':$('#del_oid').text()},
+                    success:function () {
+                        alert("订单取消成功");
+                        location.href='/order/';
+                    }
+                })
+            }
+            function print_ticket(){
+                $.ajax({
+                    url:'/time_check/',
+                    method:'post',
+                    data:{'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'oid':$('#info_o_id').text()},
+                    success:function (data) {
+                        // 方式二 : 加一行,将json格式字符串转成字典
+                        // data = JSON.parse(data)
+                        
+                        // 状态码为200则表示登入成功
+                        if (data.status === 200){
+                            alert("打印成功，请保存好您的机票！");
+                            location.href='/order/';
+                        }else {
+                            // 登入失败则使用DOM操作渲染msg	
+                            $('.print_msg').html(data.msg);
+                        }
+                    }
+                })
+            }
+            function del_ticket(){
+                var msg = "您真的确定要退票吗？\n\n请确认！";
+                if (confirm(msg)==true){
+                    $.ajax({
+                        url:'/delete_api/',
+                        method:'post',
+                        data:{'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'oid':$('#info_o_id').text()},
+                        success:function () {
+                            alert("退票成功！");
+                            location.href='/order/';
+                        }
+                    })
+                }else{
+                    return false;
+                }
+               
+            }
         </script>
     </body>
 </html>
