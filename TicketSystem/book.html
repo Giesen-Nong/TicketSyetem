@@ -240,10 +240,10 @@
                                                                             <P></p>
                                                                             </div>
                                                                         </div>
-                                                                        <input id="status" type="text" class="form-control" name="status" value="0" style = "display:none;">
+                                                                        <span id='status' style = "display:none;">0</span>
                                                                         <div class="form-group" id = "buy_btn2">
                                                                             <div class="col-sm-offset-2 col-sm-10">
-                                                                            <button type="submit" class="btn btn-success" style="margin-top:10px;margin-bottom:-14px;margin-left:130px;" onClick="buying()">购买</button>
+                                                                            <button type="button" class="btn btn-success" style="margin-top:10px;margin-bottom:-14px;margin-left:130px;" onClick="buying()">购买</button>
                                                                             </div>
                                                                         </div>
                                                                         </form>
@@ -310,7 +310,6 @@
                 $('#aname').html(data_aname);
                 $('#price').html(data_price);
                 document.getElementById('f_id').value = $('#fid_text').text();
-                $('#password_i').val('');
             })
             function buying() {
                 $.ajax({
@@ -329,9 +328,17 @@
                                 alert("密码错误，已为你生成订单，请到订单管理进行付款或取消订单！");
                             }
                             else {
-                                document.getElementById("status").value = '1';
+                                $('#status').html('1')
                                 alert("购买成功，可到订单管理查看！");
                             }
+                            $.ajax({
+                                url:'/buy/',
+                                method:'post',
+                                data:{'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val(),'F_Id':$('#fid_text').text(),'U_Id':'{{ request.session.user_id }}','status':$('#status').text()},
+                                success:function () {
+                                    location.href='/order/';
+                                }
+                            })
                         }else {
                             // 登入失败则使用DOM操作渲染msg	
                             alert(data.msg)
